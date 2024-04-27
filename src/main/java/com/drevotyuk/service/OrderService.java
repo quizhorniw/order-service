@@ -4,6 +4,7 @@ import com.drevotyuk.model.Customer;
 import com.drevotyuk.model.Order;
 import com.drevotyuk.model.Product;
 import com.drevotyuk.repository.OrderRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class OrderService {
         String customerUrl = "http://localhost:8081/customer/" + order.getCustomerId();
         String productUrl = "http://localhost:8082/product?name=" + order.getProductName();
 
-        // check whether customer and product exists, and there's enough quantity of
+        // check whether customer and product exists and there's enough quantity of
         // ordered product
         try {
             ResponseEntity<Customer> customerEntity = restTemplate.getForEntity(customerUrl, Customer.class);
@@ -60,6 +61,7 @@ public class OrderService {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        order.setCreationTime(LocalDateTime.now());
         return new ResponseEntity<>(repository.save(order), HttpStatus.CREATED);
     }
 
@@ -90,7 +92,6 @@ public class OrderService {
                     - order.getProductQuantity());
             restTemplate.put(productUrl, product);
 
-            initialOrder.setCreationTime(order.getCreationTime());
             initialOrder.setStatus(order.getStatus());
             initialOrder.setCustomerId(order.getCustomerId());
             initialOrder.setProductName(order.getProductName());
