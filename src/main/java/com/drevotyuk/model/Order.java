@@ -1,5 +1,6 @@
 package com.drevotyuk.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,6 +24,14 @@ public class Order {
     private LocalDateTime creationTime;
     @NonNull
     private OrderStatus status;
+    @NonNull
+    private int customerId;
+    @NonNull
+    private String productName;
+    @NonNull
+    private int productQuantity;
+    @GeneratedValue
+    private double totalPrice;
 
     public enum OrderStatus {
         ORDERED,
@@ -30,8 +39,12 @@ public class Order {
         DELIVERED;
     }
 
-    public Order(@NonNull LocalDateTime creationTime, @NonNull OrderStatus status) {
+    public Order(@NonNull LocalDateTime creationTime, @NonNull OrderStatus status,
+            @NonNull int customerId, @NonNull String productName, @NonNull int productQuantity) {
         this.creationTime = creationTime;
         this.status = status;
+        this.customerId = customerId;
+        this.productName = productName;
+        this.productQuantity = productQuantity;
     }
 }

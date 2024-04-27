@@ -2,9 +2,8 @@ package com.drevotyuk.controller;
 
 import com.drevotyuk.model.Order;
 import com.drevotyuk.repository.OrderRepository;
-import java.util.Optional;
+import com.drevotyuk.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
     @Autowired
     private OrderRepository repository;
+    @Autowired
+    private OrderService service;
 
     @GetMapping
     public Iterable<Order> getAllOrders() {
@@ -28,38 +30,26 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrder(@PathVariable int id) {
-        Optional<Order> optOrder = repository.findById(id);
-        if (!optOrder.isPresent())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return service.getOrderById(id);
+    }
 
-        return new ResponseEntity<>(optOrder.get(), HttpStatus.OK);
+    @GetMapping(params = "customerId")
+    public ResponseEntity<Iterable<Order>> getAllOrdersOfCustomer(@RequestParam int customerId) {
+        return service.getAllOrdersByCustomerId(customerId);
     }
 
     @PostMapping
     public ResponseEntity<Order> addOrder(@RequestBody Order order) {
-        // No checking for existing order since customer could order twice
-        return new ResponseEntity<>(repository.save(order), HttpStatus.CREATED);
+        return service.addOrder(order);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable int id, @RequestBody Order order) {
-        Optional<Order> optInitialOrder = repository.findById(id);
-        if (!optInitialOrder.isPresent())
-            return new ResponseEntity<>(repository.save(order), HttpStatus.CREATED);
-
-        Order initialOrder = optInitialOrder.get();
-        initialOrder.setCreationTime(order.getCreationTime());
-        initialOrder.setStatus(order.getStatus());
-
-        return new ResponseEntity<>(repository.save(initialOrder), HttpStatus.OK);
+        return service.updateOrderById(id, order);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Order> deleteOrder(@PathVariable int id) {
-        if (!repository.existsById(id))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        repository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return service.deleteOrderById(id);
     }
 }
