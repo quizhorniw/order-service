@@ -34,8 +34,8 @@ public class OrderController {
     }
 
     @GetMapping(params = "customerId")
-    public ResponseEntity<Iterable<Order>> getAllOrdersOfCustomer(@RequestParam int customerId) {
-        return service.getAllOrdersByCustomerId(customerId);
+    public Iterable<Order> getAllOrdersOfCustomer(@RequestParam int customerId) {
+        return repository.findByCustomerId(customerId);
     }
 
     @PostMapping

@@ -30,11 +30,6 @@ public class OrderService {
         return new ResponseEntity<>(optOrder.get(), HttpStatus.OK);
     }
 
-    public ResponseEntity<Iterable<Order>> getAllOrdersByCustomerId(int customerId) {
-        Iterable<Order> ordersByCustomerId = repository.findByCustomerId(customerId);
-        return new ResponseEntity<>(ordersByCustomerId, HttpStatus.OK);
-    }
-
     public ResponseEntity<Order> addOrder(Order order) {
         String customerUrl = "http://localhost:8081/customer/" + order.getCustomerId();
         String productUrl = "http://localhost:8082/product?name=" + order.getProductName();
