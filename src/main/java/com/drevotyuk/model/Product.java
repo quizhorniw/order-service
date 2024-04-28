@@ -1,7 +1,6 @@
 package com.drevotyuk.model;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -16,8 +15,6 @@ import lombok.NonNull;
 @Data
 public class Product {
     @Id
-    @GeneratedValue
-    private int id;
     @NonNull
     private String name;
     @NonNull
@@ -26,12 +23,4 @@ public class Product {
     private double price;
     @NonNull
     private int quantity;
-
-    public Product(@NonNull String name, @NonNull String description, @NonNull double price,
-            @NonNull int quantity) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.quantity = quantity;
-    }
 }

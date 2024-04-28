@@ -2,6 +2,7 @@ package com.drevotyuk.service;
 
 import com.drevotyuk.model.Customer;
 import com.drevotyuk.model.Order;
+import com.drevotyuk.model.Order.OrderStatus;
 import com.drevotyuk.model.Product;
 import com.drevotyuk.repository.OrderRepository;
 import java.time.LocalDateTime;
@@ -22,6 +23,10 @@ public class OrderService {
     private OrderRepository repository;
     @Autowired
     private RestTemplate restTemplate;
+    @Value("${customer.url}")
+    private String customerServiceUrl;
+    @Value("${product.url}")
+    private String productServiceUrl;
 
     public ResponseEntity<Order> getOrderById(int id) {
         Optional<Order> optOrder = repository.findById(id);
@@ -32,8 +37,8 @@ public class OrderService {
     }
 
     public ResponseEntity<Order> addOrder(Order order) {
-        String customerUrl = "http://localhost:8081/customer/" + order.getCustomerId();
-        String productUrl = "http://localhost:8082/product?name=" + order.getProductName();
+        String customerUrl = String.format("http://%s/" + order.getCustomerId(), customerServiceUrl);
+        String productUrl = String.format("http://%s?name=" + order.getProductName(), productServiceUrl);
 
         // check whether customer and product exists and there's enough quantity of
         // ordered product
@@ -55,13 +60,11 @@ public class OrderService {
 
             order.setTotalPrice(product.getPrice() * order.getProductQuantity());
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().equals(HttpStatus.BAD_REQUEST))
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(e.getStatusCode());
         }
 
         order.setCreationTime(LocalDateTime.now());
+        order.setStatus(Order.OrderStatus.ORDERED);
         return new ResponseEntity<>(repository.save(order), HttpStatus.CREATED);
     }
 
@@ -71,8 +74,8 @@ public class OrderService {
             return new ResponseEntity<>(repository.save(order), HttpStatus.CREATED);
 
         Order initialOrder = optInitialOrder.get();
-        String customerUrl = "http://localhost:8081/customer/" + order.getCustomerId();
-        String productUrl = "http://localhost:8082/product?name=" + order.getProductName();
+        String customerUrl = String.format("http://%s/" + order.getCustomerId(), customerServiceUrl);
+        String productUrl = String.format("http://%s?name=" + order.getProductName(), productServiceUrl);
 
         try {
             ResponseEntity<Customer> customerEntity = restTemplate.getForEntity(customerUrl, Customer.class);
@@ -114,8 +117,8 @@ public class OrderService {
 
         Order order = optOrder.get();
 
-        String productUrl = "http://localhost:8082/product?name="
-                + repository.findById(id).get().getProductName();
+        String productUrl = String.format(
+                "http://%s?name=" + repository.findById(id).get().getProductName(), productServiceUrl);
         try {
             ResponseEntity<Product> productEntity = restTemplate.getForEntity(productUrl, Product.class);
             if (!productEntity.hasBody())
@@ -136,6 +139,6 @@ public class OrderService {
         }
 
         repository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
