@@ -28,12 +28,20 @@ public class OrderService {
     @Value("${product.url}")
     private String productServiceUrl;
 
-    public ResponseEntity<Order> getOrderById(int id) {
+    public Iterable<Order> getAllOrders() {
+        return repository.findAll();
+    }
+
+    public ResponseEntity<Order> getOrder(int id) {
         Optional<Order> optOrder = repository.findById(id);
         if (!optOrder.isPresent())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(optOrder.get(), HttpStatus.OK);
+    }
+
+    public Iterable<Order> getAllOrdersOfCustomer(int customerId) {
+        return repository.findByCustomerId(customerId);
     }
 
     public ResponseEntity<Order> addOrder(Order order) {

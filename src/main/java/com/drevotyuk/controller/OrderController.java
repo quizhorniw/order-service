@@ -1,7 +1,6 @@
 package com.drevotyuk.controller;
 
 import com.drevotyuk.model.Order;
-import com.drevotyuk.repository.OrderRepository;
 import com.drevotyuk.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/order")
 public class OrderController {
     @Autowired
-    private OrderRepository repository;
-    @Autowired
     private OrderService service;
 
     @GetMapping
     public Iterable<Order> getAllOrders() {
-        return repository.findAll();
+        return service.getAllOrders();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrder(@PathVariable int id) {
-        return service.getOrderById(id);
+        return service.getOrder(id);
     }
 
     @GetMapping(params = "customerId")
     public Iterable<Order> getAllOrdersOfCustomer(@RequestParam int customerId) {
-        return repository.findByCustomerId(customerId);
+        return service.getAllOrdersOfCustomer(customerId);
     }
 
     @PostMapping

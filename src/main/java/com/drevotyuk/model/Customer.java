@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -18,23 +19,25 @@ import lombok.NonNull;
 public class Customer {
     @Id
     @GeneratedValue
+    @EqualsAndHashCode.Exclude
     private int id;
-    @NonNull
-    private String firstname;
     @NonNull
     private String surname;
     @NonNull
-    private String lastname;
-    @GeneratedValue
+    private String firstname;
+    @NonNull
+    private String patronymic;
+    @NonNull
+    @EqualsAndHashCode.Exclude
     private LocalDate creationDate;
     @NonNull
     private String address;
 
-    public Customer(@NonNull String firstname, @NonNull String surname, @NonNull String lastname,
+    public Customer(@NonNull String surname, @NonNull String firstname, @NonNull String patronymic,
             @NonNull String address) {
-        this.firstname = firstname;
         this.surname = surname;
-        this.lastname = lastname;
+        this.firstname = firstname;
+        this.patronymic = patronymic;
         this.address = address;
     }
 }
