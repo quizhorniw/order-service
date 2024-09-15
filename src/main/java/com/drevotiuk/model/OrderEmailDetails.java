@@ -3,7 +3,7 @@ package com.drevotiuk.model;
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Builder
+@EqualsAndHashCode
 public class OrderEmailDetails {
   /** The ID of the user who placed the order. */
   private String userId;

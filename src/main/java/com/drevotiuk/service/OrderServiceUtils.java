@@ -24,8 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Utility class for handling operations related to orders in the Order Service.
  * This class provides methods for finding orders, calculating total prices, and
- * sending notifications
- * about order creation. It also interacts with RabbitMQ for messaging.
+ * sending notifications about order creation. It also interacts with RabbitMQ
+ * for messaging.
  */
 @Service
 @RequiredArgsConstructor
@@ -53,7 +53,7 @@ public class OrderServiceUtils {
   public Order findById(ObjectId orderId) {
     return repository.findById(orderId).orElseThrow(() -> {
       log.warn("Order not found with ID {}", orderId);
-      return new OrderNotFoundException("Order not found");
+      return new OrderNotFoundException("Order not found with ID: " + orderId);
     });
   }
 
@@ -140,11 +140,10 @@ public class OrderServiceUtils {
    * @return the {@link OrderEmailDetails}
    */
   private OrderEmailDetails buildOrderEmailDetails(Order order, BigDecimal totalPrice) {
-    return OrderEmailDetails.builder()
-        .userId(order.getUserId().toString())
-        .totalPrice(totalPrice)
-        .orderTime(LocalDate.now().toString())
-        .build();
+    return new OrderEmailDetails(
+        order.getUserId().toString(),
+        LocalDate.now().toString(),
+        totalPrice);
   }
 
   /**

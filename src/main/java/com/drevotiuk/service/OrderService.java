@@ -103,13 +103,12 @@ public class OrderService {
    * @return the constructed {@link Order} object
    */
   private Order buildOrder(List<OrderItem> orderItems, ObjectId userId, BigDecimal totalPrice) {
-    return Order.builder()
-        .id(ObjectId.get())
-        .status(OrderStatus.ORDERED)
-        .userId(userId)
-        .orderItems(orderItems)
-        .orderTime(LocalDateTime.now())
-        .totalPrice(totalPrice)
-        .build();
+    return new Order(
+        ObjectId.get(),
+        OrderStatus.ORDERED,
+        userId,
+        orderItems,
+        LocalDateTime.now(),
+        totalPrice);
   }
 }

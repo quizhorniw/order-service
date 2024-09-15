@@ -9,8 +9,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -24,10 +24,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
 public class Order {
   /** The unique identifier for the order. */
   @Id
+  @EqualsAndHashCode.Exclude
   private ObjectId id;
 
   /** The status of the order. */
@@ -40,6 +40,7 @@ public class Order {
   private List<OrderItem> orderItems;
 
   /** The time when the order was placed. */
+  @EqualsAndHashCode.Exclude
   private LocalDateTime orderTime;
 
   /** The total price of the order. */
