@@ -1,6 +1,0 @@
-spring:
-  config:
-    import: configserver:http://localhost:9999
-  mongodb:
-    embedded:
-      version: 4.0.28
