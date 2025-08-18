@@ -21,3 +21,6 @@ spring:
         max-attempts: 10
         max-interval: 5000
         multiplier: 1.5
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
